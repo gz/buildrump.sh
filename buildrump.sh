@@ -362,7 +362,6 @@ probe_rumpuserbits ()
 		( export CFLAGS="${EXTRA_CFLAGS}"
 		  export LDFLAGS="${EXTRA_LDFLAGS}"
 		  export CPPFLAGS="${EXTRA_CPPFLAGS}"
-		  export CC="${CC}"
 		  cd ${BRTOOLDIR}/autoconf \
 		    && ${SRCDIR}/lib/librumpuser/configure \
 		      $( ! ${NATIVEBUILD} && echo --host ${CC_TARGET} ) )
@@ -707,7 +706,7 @@ EOF
 	# Need to:
 	#   a) migrate more defines there
 	#   b) set no MSI only when necessary
-	printf '#define NO_PCI_MSI_MSIX\n' > ${BRIMACROS}.building
+	printf '#define NO_PCI_MSI_MSIX\n#define NET_MPSAFE\n' > ${BRIMACROS}.building
 
 	# tool build done.  flip mk.conf name so that it gets picked up
 	omkconf="${MKCONF}"
@@ -788,8 +787,8 @@ makebuild ()
 	     -o ${MACHINE#evbearm} != ${MACHINE} \
 	     -o ${MACHINE#evbppc} != ${MACHINE} ]; then
 		DIRS_emul=sys/rump/kern/lib/libsys_linux
-	else
-		DIRS_emul=
+    else
+        DIRS_emul=
 	fi
 	${SYS_SUNOS} && appendvar DIRS_emul sys/rump/kern/lib/libsys_sunos
 	if ${HIJACK}; then
